@@ -8,13 +8,20 @@ declare const google: any;
   styleUrls: ['./agm-example.component.css'],
 })
 export class AgmExampleComponent implements OnInit {
-  lat = 20.5937;
-  lng = 78.9629;
+  lat = 33.52012157647301;
+  lng = -117.6893127;
   pointList: { lat: number; lng: number }[] = [];
   drawingManager: any;
   selectedShape: any;
   selectedArea = 0;
 
+  polygonPts = [
+    {lat: 33.52012157647301, lng: -117.69132120080262},
+    {lat: 33.51890510991933, lng: -117.68890721268922},
+    {lat: 33.52145430327933, lng: -117.68720132775574},
+    {lat: 33.52193729987104, lng: -117.68987280793458},
+    {lat: 33.52012157647301, lng: -117.69132120080262}
+  ];
   constructor() {}
 
   ngOnInit() {
@@ -30,9 +37,13 @@ export class AgmExampleComponent implements OnInit {
     const options = {
       drawingControl: true,
       drawingControlOptions: {
-        drawingModes: ['polygon'],
+        drawingModes: ['polygon', 'circle'],
       },
       polygonOptions: {
+        draggable: true,
+        editable: true,
+      },
+      circleOptions: {
         draggable: true,
         editable: true,
       },

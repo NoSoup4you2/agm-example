@@ -1,11 +1,20 @@
 <div class="agm-container">
   <h3>Angular Google Maps Example</h3>
   <agm-map
-    [zoom]="5"
+    [zoom]="17"
     [latitude]="lat"
     [longitude]="lng"
     (mapReady)="onMapReady($event)"
   >
+  <agm-polygon 
+              [strokeColor]="'#FF0000'"
+              [strokeWeight]="1" 
+              [fillOpacity]=".25"
+              [fillColor]="'#FF0000'"
+              [paths]="polygonPts"
+              [clickable]="false"
+              [editable]="true">
+    </agm-polygon> 
   </agm-map>
   <br />
   <div *ngIf="pointList.length>0" class="display-flex">
