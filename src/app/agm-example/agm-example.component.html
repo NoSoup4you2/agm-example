@@ -15,6 +15,20 @@
               [clickable]="false"
               [editable]="true">
     </agm-polygon> 
+    <agm-marker
+    *ngFor="let marker of markerPts"
+    [latitude]="marker.lat"
+    [longitude]="marker.lng"
+    [opacity]="marker.alpha"
+    [markerDraggable]="true"
+    (dragEnd)="markerDragEnd(marker, $event)"
+    (markerClick)="selectMarker($event)"
+    (positionChanged)="positionChanged($event)"
+    (mouseOver)="mouseOver(marker, $event)"
+    (markerRightClick)="rightClick(marker)"
+  >
+    <agm-info-window>getInfo(marker)</agm-info-window>
+  </agm-marker>
   </agm-map>
   <br />
   <div *ngIf="pointList.length>0" class="display-flex">

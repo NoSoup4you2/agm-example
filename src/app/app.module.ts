@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { AgmExampleComponent } from './agm-example/agm-example.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatButtonModule, MatListModule, MatCardModule, MatChipsModule} from '@angular/material';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -15,14 +16,15 @@ import {MatButtonModule, MatListModule, MatCardModule, MatChipsModule} from '@an
   imports: [
     BrowserModule,
     AgmCoreModule.forRoot({
-      apiKey: environment.maps_api_key,
+      apiKey:  environment.googleMapsApiKey,
       libraries: ['places', 'drawing', 'geometry']
     }),
     BrowserAnimationsModule,
     MatButtonModule,
     MatListModule,
     MatCardModule,
-    MatChipsModule
+    MatChipsModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
