@@ -17,6 +17,26 @@ export class AgmExampleComponent implements OnInit {
   drawingManager: any;
   selectedShape: any;
   selectedArea = 0;
+  iconUrl = 'http://maps.google.com/mapfiles/ms/icons/';
+  iconY = {
+    url: this.iconUrl + 'yellow-dot.png',
+    scaledSize: {
+      width: 40,
+      height: 40
+    }};
+    iconR = {
+      url: this.iconUrl + 'red-dot.png',
+      scaledSize: {
+        width: 40,
+        height: 40
+      }};
+      iconG = {
+        url: this.iconUrl + 'green-dot.png',
+        scaledSize: {
+          width: 40,
+          height: 40
+        }};
+
 
   polygonPts = [
     {lat: 33.52012157647301, lng: -117.69132120080262},
@@ -176,11 +196,19 @@ export class AgmExampleComponent implements OnInit {
   ngOnInit() {
     this.setCurrentPosition();
 
+    
+
 
   }
 
   onMapReady(map) {
     this.initDrawingManager(map);
+    const bounds: LatLngBounds = new google.maps.LatLngBounds()
+    for (let i = 0; i < this.markerPts.length; i++) {
+      bounds.extend(new google.maps.LatLng(this.markerPts[i].lat, this.markerPts[i].lng))
+  }
+  map.fitBounds(bounds);
+
   }
 
   initDrawingManager = (map: any) => {
@@ -300,11 +328,26 @@ export class AgmExampleComponent implements OnInit {
     console.log('Right Click ' + m.docid);
     this.googleservice.updateGeo(m.docid, m).subscribe(res => console.log(res));
 
-    var MarkerIndex = this.markerPts.findIndex(function GetIndex(element) {
+    const MarkerIndex = this.markerPts.findIndex(function GetIndex(element) {
       return element.docid === m.docid;
     });
     // this.markers[MarkerIndex].setMap(null);
     this.markerPts.splice(MarkerIndex, 1); // to remove element from global array
     console.log('Marker with Index : ' + MarkerIndex + ' removed !');
+  }
+
+  getIcon(occupied) {
+
+    if (occupied === '0' || occupied === 'A' ) {
+      return this.iconR;
+    }
+    if (occupied === '1' || occupied === 'O' ) {
+
+      return this.iconG;
+    }
+    if (occupied === 'E' ) {
+
+     return this.iconY;
+    }
   }
 }

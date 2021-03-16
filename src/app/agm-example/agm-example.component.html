@@ -26,8 +26,12 @@
     (positionChanged)="positionChanged($event)"
     (mouseOver)="mouseOver(marker, $event)"
     (markerRightClick)="rightClick(marker)"
+    [iconUrl]="getIcon(marker.occupied)"
   >
-    <agm-info-window>getInfo(marker)</agm-info-window>
+        <agm-info-window
+        maxWidth="200">
+        {{marker | json}}
+        </agm-info-window>
   </agm-marker>
   </agm-map>
   <br />
