@@ -13,7 +13,8 @@
               [fillColor]="'#FF0000'"
               [paths]="polygonPts"
               [clickable]="false"
-              [editable]="true">
+              [editable]="true"
+              (polyDragEnd)=PolyDrag()>
     </agm-polygon> 
     <agm-marker
     *ngFor="let marker of markerPts"
@@ -33,6 +34,21 @@
         {{marker | json}}
         </agm-info-window>
   </agm-marker>
+
+  <agm-circle
+  [latitude]="lat" [longitude]="lng"
+  [circleDraggable]="true"
+  (click)="CircleClick()"
+  [editable]="true"
+  [fillColor]="circleColor"
+  (radiusChange)="event('radiusChange',$event)"
+  (centerChange)="centerChange($event)"
+  [radius]="locationRadius"
+>
+</agm-circle>
+<agm-rectangle>
+
+</agm-rectangle>
   </agm-map>
   <br />
   <div *ngIf="pointList.length>0" class="display-flex">
@@ -41,8 +57,8 @@
 
   <mat-list role="list">
     <mat-list-item role="listitem" *ngFor="let point of pointList">
-      {{ point.lat.toPrecision(5) }},
-      {{ point.lng.toPrecision(5) }}</mat-list-item
+      {{ point.lat.toPrecision(10) }},
+      {{ point.lng.toPrecision(10) }}</mat-list-item
     >
   </mat-list>
   <mat-card *ngIf="selectedArea > 0">

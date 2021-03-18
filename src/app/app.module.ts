@@ -17,7 +17,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
     BrowserModule,
     AgmCoreModule.forRoot({
       apiKey:  environment.googleMapsApiKey,
-      libraries: ['places', 'drawing', 'geometry']
+      libraries: ['places', 'drawing', 'geometry'],
     }),
     BrowserAnimationsModule,
     MatButtonModule,

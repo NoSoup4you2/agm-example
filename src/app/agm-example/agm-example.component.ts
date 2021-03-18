@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LatLngBounds } from '@agm/core';
-import {GoogleService} from '../services/google.service';
+import { GoogleService } from '../services/google.service';
 
 declare const google: any;
 
@@ -11,10 +11,12 @@ declare const google: any;
   styleUrls: ['./agm-example.component.css'],
 })
 export class AgmExampleComponent implements OnInit {
+  map: any;
   lat = 33.52012157647301;
   lng = -117.6893127;
   pointList: { lat: number; lng: number }[] = [];
   drawingManager: any;
+  circle: any;
   selectedShape: any;
   selectedArea = 0;
   iconUrl = 'http://maps.google.com/mapfiles/ms/icons/';
@@ -196,27 +198,42 @@ export class AgmExampleComponent implements OnInit {
   ngOnInit() {
     this.setCurrentPosition();
 
-    
+
 
 
   }
 
   onMapReady(map) {
+    this.map = map;
     this.initDrawingManager(map);
-    const bounds: LatLngBounds = new google.maps.LatLngBounds()
+    this.addMapListner(map);
+    const bounds: LatLngBounds = new google.maps.LatLngBounds();
     for (let i = 0; i < this.markerPts.length; i++) {
-      bounds.extend(new google.maps.LatLng(this.markerPts[i].lat, this.markerPts[i].lng))
+      bounds.extend(new google.maps.LatLng(this.markerPts[i].lat, this.markerPts[i].lng));
   }
-  map.fitBounds(bounds);
+    map.fitBounds(bounds);
 
   }
+
+  addMapListner(map) {
+    google.maps.event.addListener(map, 'click', (event) => {
+      console.log('We clicked on Map');
+
+    });
+    google.maps.event.addListener(map, 'drag', (event) => {
+      console.log('We drag Map');
+
+    });
+  }
+
 
   initDrawingManager = (map: any) => {
     const self = this;
+    let  isBeingDragged = false;
     const options = {
       drawingControl: true,
       drawingControlOptions: {
-        drawingModes: ['polygon', 'circle'],
+        drawingModes: ['polygon', 'circle', 'rectangle'],
       },
       polygonOptions: {
         draggable: true,
@@ -226,40 +243,38 @@ export class AgmExampleComponent implements OnInit {
         draggable: true,
         editable: true,
       },
+      rectangleOptions: {
+        draggable: true,
+        editable: true,
+      },
       drawingMode: google.maps.drawing.OverlayType.POLYGON,
     };
     this.drawingManager = new google.maps.drawing.DrawingManager(options);
     this.drawingManager.setMap(map);
-    google.maps.event.addListener(
-      this.drawingManager,
-      'overlaycomplete',
-      (event) => {
+    google.maps.event.addListener( this.drawingManager, 'overlaycomplete', (event) => {
         if (event.type === google.maps.drawing.OverlayType.POLYGON) {
           const paths = event.overlay.getPaths();
           for (let p = 0; p < paths.getLength(); p++) {
-            google.maps.event.addListener(
-              paths.getAt(p),
-              'set_at',
-              () => {
-                if (!event.overlay.drag) {
+
+            google.maps.event.addListener( paths.getAt(p), 'set_at', () => {
+                if (!isBeingDragged) {
+                  console.log('We change location of point: ');
+                 //  console.log(event.overlay);
                   self.updatePointList(event.overlay.getPath());
+                  
                 }
               }
             );
-            google.maps.event.addListener(
-              paths.getAt(p),
-              'insert_at',
-              () => {
+            google.maps.event.addListener(paths.getAt(p), 'insert_at', () => {
+                console.log('We inserted a point');
                 self.updatePointList(event.overlay.getPath());
               }
             );
-            google.maps.event.addListener(
-              paths.getAt(p),
-              'remove_at',
-              () => {
+            google.maps.event.addListener(paths.getAt(p), 'remove_at', () => {
                 self.updatePointList(event.overlay.getPath());
               }
             );
+
           }
           self.updatePointList(event.overlay.getPath());
           this.selectedShape = event.overlay;
@@ -269,13 +284,90 @@ export class AgmExampleComponent implements OnInit {
           // Switch back to non-drawing mode after drawing a shape.
           self.drawingManager.setDrawingMode(null);
           // To hide:
-          self.drawingManager.setOptions({
-            drawingControl: false,
-          });
+          // self.drawingManager.setOptions({
+          //  drawingControl: false,
+          // });
         }
-      }
-    );
+     });
+
+      // Get called when polygon Creation is Completed
+    google.maps.event.addListener( this.drawingManager, 'polygoncomplete', (polygon) => {
+
+        console.log('Polygon completed');
+        this.getPolygonCoordinates(polygon);
+
+        google.maps.event.addListener(polygon, 'dragstart', () => {
+          console.log('Polygon started drag');
+          isBeingDragged = true;
+         // this.getPolygonCoordinates(polygon);
+
+        });
+
+        google.maps.event.addListener(polygon, 'dragend', () => {
+          console.log('Polygon moved finished drag');
+          isBeingDragged = false;
+          this.getPolygonCoordinates(polygon);
+
+        });
+
+      });
+
+    // Get called when Circle Creation is Completed
+    google.maps.event.addListener( this.drawingManager, 'circlecomplete', (circle) => {
+      const radius = circle.getRadius();
+      const radiusinMiles = radius / 1609.4;
+      console.log('Circle completed with Radius of :' + radius + 'meter or ' + radiusinMiles + ' in miles' );
+      console.log('Center: ' + circle.getCenter());
+
+      // Will fire everytime the Circle is moved
+      // google.maps.event.addListener(circle, 'center_changed', () => {
+      //   console.log('Circle completed with Radius of :' + radius + 'meter or ' + radiusinMiles + ' in miles' );
+      //   console.log('Center: ' + circle.getCenter());
+      // });
+      google.maps.event.addListener(circle, 'radius_changed', () => {
+        const radiusC = circle.getRadius();
+        const radiusinMilesC = radius / 1609.4;
+        console.log('Circle Radius changed :' + radiusC + 'meter or ' + radiusinMilesC + ' in miles' );
+      });
+
+      google.maps.event.addListener(circle, 'dragend', () => {
+
+        console.log('Finished Circle Drag' );
+        console.log('Circle completed Drag  with Radius of :' + radius + 'meter or ' + radiusinMiles + ' in miles' );
+        console.log('Center: ' + circle.getCenter());
+      });
+
+      google.maps.event.addListener(circle, 'rightclick', (event) => {
+        circle.setMap(null);
+        // populate yor box/field with lat, lng
+        console.log(event);
+    });
+
+    });
+
+    // Get Called when we finish drawing a Square
+    google.maps.event.addListener( this.drawingManager, 'rectanglecomplete', (rectangle) => {
+
+      const ne = rectangle.getBounds()!.getNorthEast();
+      const sw = rectangle.getBounds()!.getSouthWest();
+
+      console.log('Rectangle completed with ' + ne + ' - ' + sw );
+
+      // Register Listener for DragEnd or Rectangle
+      rectangle.addListener('dragend', () => {
+        console.log('Rectangle Drag end!');
+
+      });
+      // Register Listener for Resize or Rectangle
+      rectangle.addListener('bounds_changed', () => {
+        console.log('Rectangle Size Change!');
+
+      });
+
+    });
+
   }
+
   private setCurrentPosition() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -283,6 +375,24 @@ export class AgmExampleComponent implements OnInit {
         this.lng = position.coords.longitude;
       });
     }
+  }
+
+  getPolygonCoordinates(draggablePolygon) {
+    const len = draggablePolygon.getPath().getLength();
+    const polyArrayLatLng = [];
+
+    for (let i = 0; i < len; i++) {
+      const vertex = draggablePolygon.getPath().getAt(i);
+      const vertexLatLng = { lat: vertex.lat(), lng: vertex.lng() };
+      polyArrayLatLng.push(vertexLatLng);
+    }
+    this.pointList = polyArrayLatLng;
+    console.log(polyArrayLatLng);
+    console.log(this.pointList)
+  }
+
+  centerChange($event) {
+    console.log($event);
   }
 
   deleteSelectedShape() {
@@ -298,6 +408,7 @@ export class AgmExampleComponent implements OnInit {
   }
 
   updatePointList(path) {
+    console.log(path.getLength())
     this.pointList = [];
     const len = path.getLength();
     for (let i = 0; i < len; i++) {
@@ -305,9 +416,9 @@ export class AgmExampleComponent implements OnInit {
         path.getAt(i).toJSON()
       );
     }
-    this.selectedArea = google.maps.geometry.spherical.computeArea(
-      path
-    );
+    console.log(this.pointList);
+    console.log(google.maps.geometry.spherical.computeArea(path))
+    this.selectedArea = google.maps.geometry.spherical.computeArea(path);
   }
 
   // Marker Section
