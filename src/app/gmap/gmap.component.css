@@ -1,0 +1,65 @@
+
+h3{
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+button{
+  float: right;
+}
+.mat-list-item{
+  color:green;
+  background-color: #eeeeee;
+  margin: 1rem;
+  margin-left:0;
+  border: none;
+  border-radius: 10px;
+}
+.display-flex{
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+#map {
+  height: 750px;
+  width: 100%;
+}
+
+.pac-card {
+  margin: 10px 10px 0 0;
+  border-radius: 2px 0 0 2px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  font-family: Roboto;
+}
+
+.flexContainer {
+  display: flex;
+}
+.flexButton{
+  padding-left: 50px;
+  color: rgb(237, 127, 100);
+  background: rgb(11, 66, 219);
+}
+.flexText{
+  padding-right: 100px;
+ 
+}
+
+#pac-container {
+  padding-top: 5px;
+  margin-left: 110px;
+  z-index: 5000; /* not setting this can lead to angular hiding the autocomplete */
+  position: absolute; /* not setting this can lead to angular hiding the autocomplete */
+}
+#pac-input:focus {
+  border-color: #fe4d5c;
+}
+#pac-input {
+  width: 450px;
+  height: 25px;
+  flex: 1;
+}
+

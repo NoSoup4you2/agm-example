@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {IApiResponseBody} from '../models/api-response-body';
 import {Observable} from 'rxjs';
 import {IServerDropdownOption} from '../models/server-dropdown';
@@ -47,12 +47,17 @@ export class GoogleService {
     //     );
     // }
 
-    // fetch(DocId) {
-    //     return this.api.get({endpoint: `/leads/divorces/${DocId}`, useAuthUrl: true}).pipe(
-    //         map(res => res as IApiResponseBody),
-    //         map((res: IApiResponseBody) => DivorceLeadService.adapt(res.Data[0])),
-    //     );
-    // }
+    getGeoFilter(DocId) {
+        return this.api.get({endpoint: `/googlemap/geofilter/${DocId}`, useAuthUrl: false}).pipe(
+            map(res => res as IApiResponseBody),
+            map(res => res.Data),
+            tap(res => console.log(res))
+        );
+    }
+
+    updateFilter(DocId: string, formData: any ) {
+        return this.api.patch({endpoint: `/googlemap/geofilter/${DocId}`, body: formData, useAuthUrl: false});
+    }
 
     updateGeo(DocId: string, formData: any ) {
         return this.api.patch({endpoint: `/googlemap/geo/${DocId}`, body: formData, useAuthUrl: false});
