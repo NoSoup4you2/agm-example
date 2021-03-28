@@ -1,0 +1,27 @@
+<H3>Polygon Edit {{id}}</H3>
+<mat-form-field appearance="standard">
+    <mat-label>Subject</mat-label>
+    <input matInput placeholder="Subject">
+  </mat-form-field><br>
+
+<mat-form-field appearance="standard">
+    <mat-label>Description</mat-label>
+    <input matInput placeholder="Description">Description text
+  </mat-form-field><br>
+subject: {{subject}} <br>
+strokeColor: {{strokeColor}} <br>
+strokeOpacity:     <mat-slider
+(change)="sliderOnChange($event.value)"
+
+max="1"
+min="0"
+step="0.05"
+
+[value]="strokeOpacity">
+</mat-slider> {{ strokeOpacity }} <br>
+strokeWeight: <mat-slider min="0" max="5" step="0.05" [value]="strokeWeight"></mat-slider>{{ strokeWeight}} <br>
+ <input [(colorPicker)]="strokeColor" [style.background]="strokeColor"/>
+
+
+<button (click)="cancel()">No</button>
+<button (click)="confirm()">Yes</button>

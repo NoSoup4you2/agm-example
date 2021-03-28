@@ -39,7 +39,8 @@ button{
   display: flex;
 }
 .flexButton{
-  padding-left: 50px;
+  
+  left: 5px;
   color: rgb(237, 127, 100);
   background: rgb(11, 66, 219);
 }

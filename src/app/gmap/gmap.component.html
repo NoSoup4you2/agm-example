@@ -1,11 +1,11 @@
 <div id="pac-container">
-  <div [ngStyle]="{'display': showTextInput ? 'block' : 'none'}">
+  <div class="flexContainer" [ngStyle]="{'display': showTextInput ? 'block' : 'none'}">
   <input #search id="pac-input" type="text" placeholder="Enter a location" class="flexText">
   <button mat-mini-fab class="flexButton"(click)="hideInput()">
     <mat-icon>search</mat-icon>
   </button>
   </div>
-  <div  *ngIf="!showTextInput">
+  <div class="flexContainer" *ngIf="!showTextInput">
     <button mat-mini-fab color="primary" (click)="showInput()">
       <mat-icon>manage_search</mat-icon>
     </button>

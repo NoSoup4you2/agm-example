@@ -17,6 +17,8 @@ import { registerCircleListner } from './google-map-registrations';
 import { NgZone } from '@angular/core';
 import { Input } from '@angular/core';
 import { OnInit } from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import { PolygonDialogComponent } from '../map-dialog/polygon-dialog/polygon-dialog.component';
 
 // @Component({
 //   selector: 'input-component',
@@ -240,23 +242,17 @@ export class AgmExampleComponent implements OnInit {
   constructor(
     private googleservice: GoogleService,
     private ngZone: NgZone,
-    // private componentFactory: ComponentFactoryResolver
+    private dialog: MatDialog,
+
   ) {}
 
   ngOnInit() {
     this.setCurrentPosition();
 
   }
-  // tslint:disable-next-line: use-lifecycle-interface
   ngAfterViewInit(): void {
-    // this.inputFactory = this.componentFactory.resolveComponentFactory(
-    //   InputComponent
-    // );
-    // this.inputComponent = this.container.createComponent(this.inputFactory);
-    // this.showTextInput$.subscribe(flag => {
-    //   this.hideOrShow(flag);
-    // });
-    
+
+
     this.mapInitializer();
   }
 
@@ -377,7 +373,7 @@ export class AgmExampleComponent implements OnInit {
         editable: true,
         draggable: true,
       },
-      drawingMode: google.maps.drawing.OverlayType.POLYGON,
+      // drawingMode: google.maps.drawing.OverlayType.POLYGON,
     };
     this.drawingManager = new google.maps.drawing.DrawingManager(options);
     this.drawingManager.setMap(map);
@@ -679,8 +675,6 @@ export class AgmExampleComponent implements OnInit {
 }
 
 
-
-
 // ******************************  Polygon Function ******************************* //
 
 // Register Polygon Listners
@@ -730,6 +724,27 @@ registerPolyGonListner(polygon) {
   google.maps.event.addListener(polygon, 'click', (event) =>  {
       console.log('We clicked the polygon');
       console.log(polygon);
+  });
+
+  google.maps.event.addListener(polygon, 'dblclick', (event) =>  {
+    console.log('We double clicked the polygon');
+    console.log(polygon);
+    
+    const dialogRef = this.dialog.open(PolygonDialogComponent, {
+      data: polygon,
+      height: '400px',
+      width: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe(res => {
+      console.log('We closed the Dialog');
+      console.log(res.data);
+      if (res.data.action === 'update') {
+        console.log('Will update Polygon Color')
+        polygon.setOptions({fillColor: res.data.fillColor});
+      }
+    });
+
 
   });
 }
@@ -900,24 +915,12 @@ savegeofilter() {
 
 showInput() {
   this.showTextInput = true;
-  this.initAutoComplete();
 }
 
 hideInput() {
   this.showTextInput = false;
 }
 
-// hideOrShow(showInput: boolean) {
-//   switch (showInput) {
-//     case true:
-//       this.container.insert(this.inputComponent.hostView);
-//       this.initAutoComplete();
-//       break;
-//     case false:
-//       this.container.detach();
-//       break;
-//   }
-// }
 
 
 codeAddress(address) {

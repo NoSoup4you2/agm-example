@@ -4,9 +4,12 @@ import { environment } from './../environments/environment';
 import { AppComponent } from './app.component';
 import { AgmExampleComponent } from './gmap/gmap.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatButtonModule, MatListModule, MatCardModule, MatChipsModule, MatIconModule} from '@angular/material';
+import {MatButtonModule, MatListModule, MatCardModule, MatChipsModule, MatIconModule, MatDialogModule,MatFormFieldModule,MatInputModule} from '@angular/material';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { SamplePageComponent } from './sample-page/sample-page.component';
+import { PolygonDialogComponent } from './map-dialog/polygon-dialog/polygon-dialog.component';
+import { ColorPickerModule } from 'ngx-color-picker';
+import {MatSliderModule} from '@angular/material/slider';
 
 
 
@@ -14,7 +17,8 @@ import { SamplePageComponent } from './sample-page/sample-page.component';
   declarations: [
     AppComponent,
     AgmExampleComponent,
-    SamplePageComponent
+    SamplePageComponent,
+    PolygonDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -24,9 +28,17 @@ import { SamplePageComponent } from './sample-page/sample-page.component';
     MatCardModule,
     MatChipsModule,
     HttpClientModule,
-    MatIconModule
+    MatIconModule,
+    MatDialogModule,
+    ColorPickerModule,
+    MatSliderModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    PolygonDialogComponent
+  ]
 })
 export class AppModule { }
